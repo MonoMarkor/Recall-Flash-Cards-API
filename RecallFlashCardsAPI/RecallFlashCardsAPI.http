@@ -1,0 +1,6 @@
+@RecallFlashCardsAPI_HostAddress = http://localhost:5049
+
+GET {{RecallFlashCardsAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,47 @@
+Ini, TOML
+## Professional .NET / Visual Studio GitIgnore
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Re]leases/
+x64/
+x86/
+amd64/
+arm/
+arm64/
+bsearch/
+bin/
+obj/
+
+# Visual Studio cache and settings
+.vs/
+外观/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# VS Code settings
+.vscode/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Rider / JetBrains IDEs
+.idea/
+*.sln.iml
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Avoid committing local application secrets (highly recommended)
+secrets.json
