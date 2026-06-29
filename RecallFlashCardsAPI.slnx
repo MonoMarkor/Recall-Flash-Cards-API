@@ -1,3 +1,10 @@
 <Solution>
+  <Folder Name="/Projektmappenelemente/">
+    <File Path=".gitignore" />
+  </Folder>
+  <Project Path="BLL/BLL.csproj" Id="f7c83b5a-0e66-4286-bd3f-6d49ad5830bb" />
+  <Project Path="Domain/Domain.csproj" Id="5c7720d6-84c9-4436-8696-4b9e8256e7c3" />
+  <Project Path="Infrastructur.Gemini/Infrastructur.Gemini.csproj" Id="2b609e8d-a5a6-4e28-aa50-fa85f507162b" />
+  <Project Path="Infrastructure.SQL/Infrastructure.SQL.csproj" Id="8a244514-a9ba-4926-815e-23a18e548a1f" />
   <Project Path="RecallFlashCardsAPI/RecallFlashCardsAPI.csproj" />
 </Solution>
