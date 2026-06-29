@@ -38,4 +38,4 @@ ehthumbs.db
 Desktop.ini
 
 secrets.json
-appsettings.Development.json
+RecallFlashCardsAPI/appsettings.Development.json
