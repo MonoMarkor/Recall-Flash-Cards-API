@@ -27,7 +27,7 @@ app.UseHttpsRedirection();
 
 app.MapGet("/test", async ( IClassification classification) =>
 {
-    string answer = await classification.GetClassificationAsync("cat");
+    string answer = await classification.GetClassificationAsync("cat", ["cute", "dangerous", "creepy"]);
 
     return Results.Ok(answer);
 });
