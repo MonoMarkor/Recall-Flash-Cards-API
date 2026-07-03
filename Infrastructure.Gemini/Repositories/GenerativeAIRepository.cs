@@ -3,16 +3,16 @@ using Google.GenAI;
 
 namespace Infrastructure.Gemini.Repositories
 {
-    public class Classification : IClassification
+    public class GenerativeAIRepository : IGenerativeAIRepository
     {
         private readonly Client _client;
 
-        public Classification(Client client)
+        public GenerativeAIRepository(Client client)
         {
             _client = client;
         }
 
-        async Task<string> IClassification.GetClassificationAsync(string flashCard, string[] categories)
+        async Task<string> IGenerativeAIRepository.GetClassificationAsync(string flashCard, string[] categories)
         {
             var response = await _client.Models.GenerateContentAsync(
                       model: "gemini-2.5-flash", 
@@ -21,7 +21,7 @@ namespace Infrastructure.Gemini.Repositories
             return response.Candidates[0].Content.Parts[0].Text;
         }
 
-        async Task<string> IClassification.GetTranslationOfHeaderAsync(string header, string languageName)
+        async Task<string> IGenerativeAIRepository.GetTranslationOfHeaderAsync(string header, string languageName)
         {
             var response = await _client.Models.GenerateContentAsync(
                       model: "gemini-2.5-flash",
@@ -29,7 +29,7 @@ namespace Infrastructure.Gemini.Repositories
                     );
             return response.Candidates[0].Content.Parts[0].Text;
         }
-        async Task<string> IClassification.GetTranslationOfBodyAsync(string body, string languageName)
+        async Task<string> IGenerativeAIRepository.GetTranslationOfBodyAsync(string body, string languageName)
         {
             var response = await _client.Models.GenerateContentAsync(
                       model: "gemini-2.5-flash",

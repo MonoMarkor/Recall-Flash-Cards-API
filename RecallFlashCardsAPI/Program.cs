@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 
 var geminiOptions = builder.Configuration.GetSection("Gemini").Get<GeminiOptions>();
 builder.Services.AddScoped<Client>(sp => new Client(apiKey: geminiOptions.ApiKey));
-builder.Services.AddScoped<IClassification, Classification>();
+builder.Services.AddScoped<IGenerativeAIRepository, GenerativeAIRepository>();
 
 var app = builder.Build();
 
@@ -25,7 +25,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/test", async ( IClassification classification) =>
+app.MapGet("/test", async ( IGenerativeAIRepository classification) =>
 {
     string answer = await classification.GetClassificationAsync("cat", ["cute", "dangerous", "creepy"]);
 

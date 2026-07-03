@@ -1,7 +1,7 @@
 ﻿
 namespace Domain.IRepositories
 {
-    public interface IClassification
+    public interface IGenerativeAIRepository
     {
         Task<string> GetClassificationAsync(string flashCard, string[] categories);
         Task<string> GetTranslationOfHeaderAsync(string header, string lang);
