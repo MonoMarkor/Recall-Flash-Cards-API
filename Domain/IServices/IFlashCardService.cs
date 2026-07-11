@@ -4,11 +4,11 @@ namespace Domain.IServices
 {
     public interface IFlashCardService
     {
-        Task<FlashCardDto> RetrieveFlashCardByIdAsync(string flashCardId);
-        Task<List<FlashCardDto>> RetrieveAllFlashCardsByCollectionIdAsync(string collectionId);
-        Task<List<FlashCardDto>> RetrieveSomeFlashCardsByCollectionIdAsync(string collectionId, int amount);
+        Task<FlashCardDto> RetrieveFlashCardByIdAsync(int flashCardId);
+        Task<List<FlashCardDto>> RetrieveAllFlashCardsByCollectionIdAsync(int collectionId);
+        Task<List<FlashCardDto>> RetrieveSomeFlashCardsByCollectionIdAsync(int collectionId, int amount);
         Task<int> CreateOrUpdateFlashCardAsync(FlashCardDto flashCard);
-        Task<int> UpdateAnswerAsync(string flashCardId, CardContent cardContent);
-        Task<bool> DeleteFlashCardAsync(string flashCardId);
+        Task<int> UpdateAnswerAsync(int flashCardId, CardContentDto cardContent);
+        Task<bool> DeleteFlashCardAsync(int flashCardId);
     }
 }

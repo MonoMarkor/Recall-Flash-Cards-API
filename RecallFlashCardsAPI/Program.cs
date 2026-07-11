@@ -28,6 +28,8 @@ builder.Services.AddScoped<IGenerativeAIRepository, GenerativeAIRepository>();
 
 builder.Services.AddScoped<ICollectionService, CollectionService>();
 builder.Services.AddScoped<ICollectionRepository, CollectionRepository>();
+builder.Services.AddScoped<IFlashCardService, FlashCardService>();
+builder.Services.AddScoped<IFlashCardRepository, FlashCardRepository>();
 
 var app = builder.Build();
 

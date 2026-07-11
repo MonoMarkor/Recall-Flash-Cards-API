@@ -13,7 +13,8 @@
         public CardContent Question { get; set; }
         public CardContent Answer { get; set; }
         public DifficultyLevel Difficulty { get; set; }
-        public string CollectionId { get; set; }
+        public DateTime ExpirationDate { get; set; }
+        public int CollectionId { get; set; }
     }
     
 }
@@ -29,7 +30,7 @@ public class CardContent
     PrimaryContentType Primary { get; set; }
     public string? Text { get; set; }
     public string? ImageBase64 { get; set; }
-    public string? AudioImage64 { get; set; }
+    public string? AudioBase64 { get; set; }
 }
 
 

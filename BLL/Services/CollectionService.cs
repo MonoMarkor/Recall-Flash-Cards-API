@@ -17,21 +17,24 @@ namespace BLL.Services
             var collectionId = _collectionRepository.CreateCollection(collection);
             return collectionId;
         }
-        public Task<int> UpdateCollectionNameAsync(int collectionId, string name)
+        public async Task<int> UpdateCollectionNameAsync(int collectionId, string name)
         {
-            return Task.FromResult(0);
+            int rowsAffected = await _collectionRepository.UpdateCollectionNameAsync(collectionId, name);
+            return rowsAffected;
         }
-        public Task<bool> DeleteCollectionAsync(int collectionId)
+        public async Task<bool> DeleteCollectionAsync(int collectionId)
         {
-            return Task.FromResult(false);
+            bool result = await _collectionRepository.DeleteCollectionAsync(collectionId);
+            return result;
         }
-        public Task<int> SafeDeleteCollectionAsync(int collectionId)
+        public async Task<int> SafeDeleteCollectionAsync(int collectionId)
         {
-            return Task.FromResult(0);
+            int rows = await _collectionRepository.SafeDeleteCollectionAsync(collectionId);
+            return rows;
         }
-        public Task<bool> DeleteAllFlashCardsOfCollectionAsync(int collectionId)
+        public async Task<bool> DeleteAllFlashCardsOfCollectionAsync(int collectionId)
         {
-            return Task.FromResult(false);
+            return await _collectionRepository.DeleteAllFlashCardsOfCollectionAsync(collectionId);
         }
     }
 }
