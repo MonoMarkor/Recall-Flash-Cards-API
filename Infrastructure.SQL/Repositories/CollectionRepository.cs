@@ -1,25 +1,61 @@
-﻿using Domain.IRepositories;
-using Domain.DTOs;
+﻿using Domain.DTOs;
+using Domain.IRepositories;
+using Infrastructure.SQL.Database.Entities;
+using Infrastructure.SQL.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.SQL.Repositories
 {
     public class CollectionRepository : ICollectionRepository
     {
-        public Task<int> CreateCollection(CollectionDto collection)
+
+        private readonly PostgreSQLDbContext _dbContext;
+
+        public CollectionRepository(PostgreSQLDbContext dbContext)
         {
-            return Task.FromResult(0);
+            _dbContext = dbContext;
         }
-        public Task<int> UpdateCollectionNameAsync(int collectionId, string name)
+        public async Task<int> CreateCollection(CollectionDto collection)
         {
-            return Task.FromResult(0);
+            var newCollection = new CollectionEntity
+            {
+                Name = collection.Name,
+                Description = collection.Description
+            };
+            _dbContext.Collections.Add(newCollection);
+            await _dbContext.SaveChangesAsync();
+
+            return newCollection.Id;
         }
-        public Task<bool> DeleteCollectionAsync(string collectionId)
+        public async Task<int> UpdateCollectionNameAsync(int collectionId, string name)
         {
-            return Task.FromResult(false);
+            int rowsAffected = await _dbContext.Collections
+                .Where(c => c.Id == collectionId)
+                .ExecuteUpdateAsync(s => s.SetProperty(c => c.Name, name));
+
+            return rowsAffected;
         }
-        public Task<bool> DeleteAllFlashCardsOfCollectionAsync(string collectionId)
+        public async Task<int> SafeDeleteCollectionAsync(int collectionId)
         {
-            return Task.FromResult(false);
+            int rows = _dbContext.FlashCards.Count(fc => fc.CollectionId == collectionId);
+            if (rows > 0)
+            {
+              return rows;  
+            }
+            await DeleteCollectionAsync(collectionId);
+            return rows;
+        }
+        public async Task<bool> DeleteCollectionAsync(int collectionId)
+        {
+            int rowsAffected = await _dbContext.Collections
+                .Where(c => c.Id == collectionId).ExecuteDeleteAsync();
+
+            return rowsAffected > 0;
+        }
+        public async Task<bool> DeleteAllFlashCardsOfCollectionAsync(int collectionId)
+        {
+            await _dbContext.FlashCards.Where(fc => fc.CollectionId == collectionId).ExecuteDeleteAsync();
+            return true;
         }
     }
 }

@@ -9,7 +9,7 @@
             Medium,
             Hard
         }
-        public string Id { get; set; }
+        public int Id { get; set; }
         public CardContent Question { get; set; }
         public CardContent Answer { get; set; }
         public DifficultyLevel Difficulty { get; set; }

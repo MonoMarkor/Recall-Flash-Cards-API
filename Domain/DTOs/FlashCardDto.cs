@@ -9,16 +9,16 @@
             Medium,
             Hard
         }
-        public string? Id { get; set; }
-        public CardContent Question { get; set; }
-        public CardContent Answer { get; set; }
+        public int Id { get; set; }
+        public CardContentDto Question { get; set; }
+        public CardContentDto Answer { get; set; }
         public DateTime ExpirationDate { get; set; }
         public DifficultyLevel Difficulty { get; set; }
-        public string CollectionId { get; set; }
+        public int CollectionId { get; set; }
     }
 }
 
-public class CardContent
+public class CardContentDto
 {
     public enum PrimaryContentType
     {

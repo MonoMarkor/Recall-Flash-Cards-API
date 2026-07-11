@@ -47,9 +47,9 @@ app.MapGet("/test", async ( IGenerativeAIRepository classification) =>
     return Results.Ok(answer);
 });
 
-app.MapPost("/collection", async (ICollectionService collectionService, CollectionDto collection) =>
+app.MapPost("/collection", async (ICollectionService collectionService, Collection collection) =>
 {
-    var newCollection = new Collection
+    var newCollection = new CollectionDto
     {
         Name = collection.Name,
         Description = collection.Description

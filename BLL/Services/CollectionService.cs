@@ -21,11 +21,15 @@ namespace BLL.Services
         {
             return Task.FromResult(0);
         }
-        public Task<bool> DeleteCollectionAsync(string collectionId)
+        public Task<bool> DeleteCollectionAsync(int collectionId)
         {
             return Task.FromResult(false);
         }
-        public Task<bool> DeleteAllFlashCardsOfCollectionAsync(string collectionId)
+        public Task<int> SafeDeleteCollectionAsync(int collectionId)
+        {
+            return Task.FromResult(0);
+        }
+        public Task<bool> DeleteAllFlashCardsOfCollectionAsync(int collectionId)
         {
             return Task.FromResult(false);
         }

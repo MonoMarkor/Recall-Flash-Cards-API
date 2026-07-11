@@ -1,5 +1,4 @@
-﻿
-
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Infrastructure.SQL.Database.Entities
@@ -7,8 +6,11 @@ namespace Infrastructure.SQL.Database.Entities
     public class CollectionEntity
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+
+        public string? Name { get; set; }
 
         public string? Description { get; set; }
+
+        public ICollection<FlashCardEntity> FlashCards { get; set; } = null!;
     }
 }
