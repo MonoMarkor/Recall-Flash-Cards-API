@@ -27,7 +27,7 @@ public class CardContentEntity
         Image,
         Audio
     }
-    PrimaryContentType Primary { get; set; }
+    public PrimaryContentType PrimaryContent { get; set; }
     public string? Text { get; set; }
     public string? ImagePath { get; set; }
     public string? AudioPath { get; set; }

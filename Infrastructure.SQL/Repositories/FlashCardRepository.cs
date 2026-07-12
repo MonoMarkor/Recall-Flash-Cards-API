@@ -1,8 +1,10 @@
 ﻿using Domain.DTOs;
 using Domain.IRepositories;
+using Domain.IServices;
 using Infrastructure.SQL.Database;
 using Infrastructure.SQL.Database.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.SQL.Repositories
 {
@@ -10,11 +12,18 @@ namespace Infrastructure.SQL.Repositories
     {
 
         private readonly PostgreSQLDbContext _dbContext;
+        private readonly IMinioService _minioService;
+        private readonly string _imageBucket;
+        private readonly string _audioBucket;
 
-        public FlashCardRepository(PostgreSQLDbContext dbContext)
+        public FlashCardRepository(PostgreSQLDbContext dbContext, IMinioService minioService, IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _minioService = minioService;
+            _imageBucket = configuration["Minio:ImageBucket"];
+            _audioBucket = configuration["Minio:AudioBucket"];
         }
+
         public async Task<FlashCardDto> RetrieveFlashCardByIdAsync(int flashCardId)
         {
             var flashCardEntity = await _dbContext.FlashCards.SingleOrDefaultAsync(f => f.Id == flashCardId);
@@ -22,13 +31,50 @@ namespace Infrastructure.SQL.Repositories
             {
                 throw new KeyNotFoundException($"FlashCard with ID {flashCardId} was not found.");
             }
+            
             var flashCardDto = new FlashCardDto
             {
                 Id = flashCardEntity.Id,
                 ExpirationDate = flashCardEntity.ExpirationDate,
                 Difficulty = (FlashCardDto.DifficultyLevel)flashCardEntity.Difficulty,
-                CollectionId = flashCardEntity.CollectionId
+                CollectionId = flashCardEntity.CollectionId,
             };
+            if (flashCardEntity.Answer != null)
+            {
+                flashCardDto.Answer.PrimaryContent = (CardContentDto.PrimaryContentType)flashCardEntity.Answer.PrimaryContent;
+                switch (flashCardEntity.Answer.PrimaryContent)
+                {
+                    case CardContentEntity.PrimaryContentType.Text:
+                        flashCardDto.Answer.Text = flashCardEntity.Answer.Text;
+                        break;
+                    case CardContentEntity.PrimaryContentType.Image:
+                        flashCardDto.Answer.ImageBytes = await _minioService.GetFileAsync(_imageBucket, flashCardEntity.Answer.ImagePath);
+                        break;
+                    case CardContentEntity.PrimaryContentType.Audio:
+                        flashCardDto.Answer.AudioBytes = await _minioService.GetFileAsync(_audioBucket, flashCardEntity.Answer.AudioPath);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (flashCardEntity.Question != null)
+            {
+                flashCardDto.Question.PrimaryContent = (CardContentDto.PrimaryContentType)flashCardEntity.Question.PrimaryContent;
+                switch (flashCardEntity.Question.PrimaryContent)
+                {
+                    case CardContentEntity.PrimaryContentType.Text:
+                        flashCardDto.Question.Text = flashCardEntity.Question.Text;
+                        break;
+                    case CardContentEntity.PrimaryContentType.Image:
+                        flashCardDto.Question.ImageBytes = await _minioService.GetFileAsync(_imageBucket, flashCardEntity.Question.ImagePath);
+                        break;
+                    case CardContentEntity.PrimaryContentType.Audio:
+                        flashCardDto.Question.AudioBytes = await _minioService.GetFileAsync(_audioBucket, flashCardEntity.Question.AudioPath);
+                        break;
+                    default:
+                        break;
+                }
+            }
             return flashCardDto;
         }
         public async Task<List<FlashCardDto>> RetrieveAllFlashCardsByCollectionIdAsync(int collectionId)

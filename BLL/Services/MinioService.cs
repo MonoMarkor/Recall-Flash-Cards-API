@@ -2,6 +2,7 @@
 using Minio;
 using Minio.DataModel;
 using Minio.DataModel.Args;
+using Minio.DataModel.Replication;
 using Minio.Exceptions;
 
 namespace BLL.Services
@@ -39,7 +40,7 @@ namespace BLL.Services
             }
         }
 
-        public async Task<Byte[]> GetBucket(string bucketName, string objectName)
+        public async Task<Byte[]> GetFileAsync(string bucketName, string objectName)
         {
             try
             {
@@ -75,7 +76,7 @@ namespace BLL.Services
             }
         }
 
-        public async Task UploadFile(string bucketName, string objectName, byte[] file)
+        public async Task UploadOrUpdateFileAsync(string bucketName, string objectName, byte[] file)
         {
             try
             {
@@ -88,7 +89,7 @@ namespace BLL.Services
                     else Console.WriteLine();
                 });
 
-                using (var stream = new MemoryStream())
+                using (var stream = new MemoryStream(file))
                 {
                     PutObjectArgs putObjectArgs = new PutObjectArgs()
                                                   .WithBucket(bucketName)
@@ -104,6 +105,22 @@ namespace BLL.Services
             catch (MinioException e)
             {
                 Console.WriteLine("Error occurred: " + e);
+            }
+        }
+
+        public async Task DeleteFileAsync(string bucketName, string objectName) 
+        {
+            try
+            {
+                RemoveObjectArgs rmArgs = new RemoveObjectArgs()
+                                              .WithBucket(bucketName)
+                                              .WithObject(objectName);
+                await _minioClient.RemoveObjectAsync(rmArgs);
+                Console.WriteLine($"successfully removed {bucketName}/{objectName}");
+            }
+            catch (MinioException e)
+            {
+                Console.WriteLine("Error: " + e);
             }
         }
     }

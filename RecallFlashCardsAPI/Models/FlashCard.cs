@@ -27,7 +27,7 @@ public class CardContent
         Image,
         Audio
     }
-    PrimaryContentType Primary { get; set; }
+    public PrimaryContentType PrimaryContent { get; set; }
     public string? Text { get; set; }
     public string? ImageBase64 { get; set; }
     public string? AudioBase64 { get; set; }

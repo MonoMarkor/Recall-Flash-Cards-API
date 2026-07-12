@@ -26,7 +26,7 @@ public class CardContentDto
         Image,
         Audio
     }
-    PrimaryContentType Primary { get; set; }
+    public PrimaryContentType PrimaryContent { get; set; }
     public string? Text { get; set; }
     public byte[]? ImageBytes { get; set; }
     public byte[]? AudioBytes { get; set; }

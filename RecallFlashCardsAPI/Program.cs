@@ -1,16 +1,16 @@
-using System.Net.Security;
-using Domain.IRepositories;
+using BLL.Services;
 using Domain.DTOs;
+using Domain.IRepositories;
 using Domain.IServices;
 using Google.GenAI;
 using Infrastructure.Gemini;
 using Infrastructure.Gemini.Repositories;
-using RecallFlashCardsAPI.Models;
-using BLL.Services;
-using Infrastructure.SQL.Repositories;
 using Infrastructure.SQL.Database;
+using Infrastructure.SQL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Minio;
+using RecallFlashCardsAPI.Models;
+using System.Net.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,9 +24,15 @@ builder.Services.AddDbContext<PostgreSQLDbContext>(options =>
 });
 
 var geminiOptions = builder.Configuration.GetSection("Gemini").Get<GeminiOptions>();
-builder.Services.AddScoped<Client>(sp => new Client(apiKey: geminiOptions.ApiKey));
+if (geminiOptions != null && !string.IsNullOrEmpty(geminiOptions.ApiKey))
+{
+    builder.Services.AddScoped<Client>(sp => new Client(apiKey: geminiOptions.ApiKey));
+}
+else
+{
+    Console.WriteLine("Gemini API key is not configured. Please set the 'Gemini:ApiKey' in appsettings.json or environment variables.");
+}
 builder.Services.AddScoped<IGenerativeAIRepository, GenerativeAIRepository>();
-
 builder.Services.AddScoped<ICollectionService, CollectionService>();
 builder.Services.AddScoped<ICollectionRepository, CollectionRepository>();
 builder.Services.AddScoped<IFlashCardService, FlashCardService>();
@@ -47,8 +53,12 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var minioService = scope.ServiceProvider.GetRequiredService<IMinioService>();
-    await minioService.InitBucketAsync("flashcard-images");
-    await minioService.InitBucketAsync("flashcard-audios");
+    string imageBucket = builder.Configuration["Minio:ImageBucket"]
+        ?? throw new InvalidOperationException("Minio:ImageBucket configuration is missing."); ;
+    string audioBucket = builder.Configuration["Minio:AudioBucket"]
+        ?? throw new InvalidOperationException("Minio:AudioBucket configuration is missing.");
+    await minioService.InitBucketAsync(imageBucket);
+    await minioService.InitBucketAsync(audioBucket);
 }
 
 if (app.Environment.IsDevelopment())
