@@ -10,6 +10,7 @@ using BLL.Services;
 using Infrastructure.SQL.Repositories;
 using Infrastructure.SQL.Database;
 using Microsoft.EntityFrameworkCore;
+using Minio;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,9 +31,25 @@ builder.Services.AddScoped<ICollectionService, CollectionService>();
 builder.Services.AddScoped<ICollectionRepository, CollectionRepository>();
 builder.Services.AddScoped<IFlashCardService, FlashCardService>();
 builder.Services.AddScoped<IFlashCardRepository, FlashCardRepository>();
+builder.Services.AddScoped<IMinioService, MinioService>();
+
+builder.Services.AddMinio(options =>
+    options.WithEndpoint(builder.Configuration.GetSection("Minio")["Endpoint"])
+    .WithCredentials(
+        builder.Configuration.GetSection("Minio")["AccessKey"],
+        builder.Configuration.GetSection("Minio")["SecretKey"]
+    )
+    .WithSSL(builder.Configuration.GetSection("Minio").GetValue<bool>("Secure"))
+);
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var minioService = scope.ServiceProvider.GetRequiredService<IMinioService>();
+    await minioService.InitBucketAsync("flashcard-images");
+    await minioService.InitBucketAsync("flashcard-audios");
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -56,7 +73,6 @@ app.MapPost("/collection", async (ICollectionService collectionService, Collecti
         Name = collection.Name,
         Description = collection.Description
     };
-
     return Results.Ok(newCollection.Id);
 });
 

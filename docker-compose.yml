@@ -1,9 +1,10 @@
 services:
+  
   postgres:
     image: postgres:17.4 
     container_name: postgres
     volumes:
-      - postgresql_data:/var/lib/postgresql/data
+      - ./postgresql_data:/var/lib/postgresql/data
     env_file:
       - .env    
     environment:
@@ -13,34 +14,42 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - postgres_network
+      - app_network
+
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin
     volumes:
-      - pgadmin_working_dir:/var/lib/pgadmin
-      - pgadmin_config_dir:/pgadmin4
+      - ./pgadmin_working_dir:/var/lib/pgadmin
     env_file:
       - .env    
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     depends_on:
       - postgres
     ports:
       - "5433:80"
     networks:
-      - postgres_network
+      - app_network
 
-volumes:
-  postgresql_data:
-    driver: local
-  pgadmin_working_dir:
-    driver: local
-  pgadmin_config_dir:
-    driver: local
+  minio:
+    image: quay.io/minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    env_file:
+      - .env  
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ./minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - app_network
 
 networks:
-  postgres_network:
+  app_network:
     driver: bridge

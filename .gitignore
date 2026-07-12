@@ -41,3 +41,7 @@ secrets.json
 RecallFlashCardsAPI/appsettings.Development.json
 
 PostgreSQL
+minio_data/
+pgadmin_working_dir/
+postgresql_data/
+.env
