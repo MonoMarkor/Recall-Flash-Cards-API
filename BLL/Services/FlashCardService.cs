@@ -21,9 +21,9 @@ namespace BLL.Services
         {
             return await _flashCardRepository.RetrieveAllFlashCardsByCollectionIdAsync(collectionId);
         }
-        public async Task<List<FlashCardDto>> RetrieveSomeFlashCardsByCollectionIdAsync(int collectionId, int amount)
+        public async Task<List<FlashCardDto>> RetrievePagedFlashCardsByCollectionIdAsync(int collectionId,int index, int amount)
         {
-            return await _flashCardRepository.RetrieveSomeFlashCardsByCollectionIdAsync(collectionId, amount);
+            return await _flashCardRepository.RetrievePagedFlashCardsByCollectionIdAsync(collectionId, index, amount);
         }
         public async Task<int> CreateOrUpdateFlashCardAsync(FlashCardDto flashCard)
         {
