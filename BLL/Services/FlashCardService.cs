@@ -352,24 +352,37 @@ namespace BLL.Services
 
             await _flashCardRepository.UpdateCardContentAsync(flashCardId, existingEntity, isAnswer);
         }
-        public async Task<int> UpdateAnswerAsync(int flashCardId, CardContentDto cardContent, bool isAnswer)
+        public async Task<int> UpdateCardContentAsync(int flashCardId, CardContentDto cardContent, bool isAnswer)
         {
 
             FlashCardEntity flashCardEntity = await _flashCardRepository.RetrieveFlashCardByIdAsync(flashCardId);
             if (flashCardEntity == null) return 0;
 
-            await ProcessCardContentAsync(
-                flashCardId,
-                cardContent,
-                flashCardEntity.Answer,
-                GetAnswerImagePath,
-                GetAnswerAudioPath,
-                isAnswer: true
-            );
+            if (isAnswer)
+            {
+                await ProcessCardContentAsync(
+                    flashCardId,
+                    cardContent,
+                    flashCardEntity.Answer,
+                    GetAnswerImagePath,
+                    GetAnswerAudioPath,
+                    isAnswer: true
+                );
+            } else
+            {
+                await ProcessCardContentAsync(
+                    flashCardId,
+                    cardContent,
+                    flashCardEntity.Question,
+                    GetQuestionImagePath,
+                    GetQuestionAudioPath,
+                    isAnswer: false
+                );
+            }
 
             return flashCardId;
         }
-        public async Task<int> CopyFlashCard(int flashCardId, int collectionId)
+        public async Task<int> CopyFlashCardAsync(int flashCardId, int collectionId)
         {
             FlashCardEntity flashCardEntity = await _flashCardRepository.RetrieveFlashCardByIdAsync(flashCardId);
             if (flashCardEntity == null)

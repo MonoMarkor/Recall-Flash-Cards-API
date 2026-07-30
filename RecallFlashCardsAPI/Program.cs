@@ -7,10 +7,10 @@ using Infrastructure.Gemini;
 using Infrastructure.Gemini.Repositories;
 using Infrastructure.SQL.Database;
 using Infrastructure.SQL.Repositories;
+using Infrastructure.SQL.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using Minio;
 using RecallFlashCardsAPI.Models;
-using System.Net.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 

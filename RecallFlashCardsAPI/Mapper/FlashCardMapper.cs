@@ -73,5 +73,17 @@ namespace RecallFlashCardsAPI.Mapper
                 .Select(dto => Map(dto))  
                 .ToList();
         }
+
+        public CardContentDto Map(CardContent cardContent)
+        {
+            CardContentDto cardContentDto = new CardContentDto
+            {
+                Text = cardContent.Text,
+                ImageBytes = cardContent.ImageBase64 != null ? Convert.FromBase64String(cardContent.ImageBase64) : null,
+                AudioBytes = cardContent.AudioBase64 != null ? Convert.FromBase64String(cardContent.AudioBase64) : null
+            };
+
+            return cardContentDto;
+        }
     }
 }
