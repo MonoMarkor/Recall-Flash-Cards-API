@@ -2,7 +2,6 @@
 using Minio;
 using Minio.DataModel;
 using Minio.DataModel.Args;
-using Minio.DataModel.Replication;
 using Minio.Exceptions;
 
 namespace BLL.Services
@@ -66,12 +65,12 @@ namespace BLL.Services
             }
             catch (MinioException e)
             {
-                Console.WriteLine("Error occurred: " + e);
+                Console.WriteLine("Minio Error occurred while retrieving: " + e.Message);
                 throw;
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error occurred: " + e);
+                Console.WriteLine("Minio Error occurred while retrieving: " + e.Message);
                 throw;
             }
         }
@@ -104,7 +103,29 @@ namespace BLL.Services
             }
             catch (MinioException e)
             {
-                Console.WriteLine("Error occurred: " + e);
+                Console.WriteLine("Minio Error occurred while uploading/updating: " + e.Message);
+                throw;
+            }
+        }
+
+        public async Task CopyFileInSameBucketAsync(string bucketName, string originalObjectName, string newObjectName)
+        {
+            try
+            {
+                CopyObjectArgs copyObjectArgs = new CopyObjectArgs()
+                    .WithBucket(bucketName)
+                    .WithObject(newObjectName)
+                    .WithCopyObjectSource(new CopySourceObjectArgs()
+                    .WithBucket(bucketName)
+                    .WithObject(originalObjectName));
+
+                await _minioClient.CopyObjectAsync(copyObjectArgs);
+                Console.WriteLine($"Successfully copied '{originalObjectName}' to '{newObjectName}' in bucket '{bucketName}'.");
+            }
+            catch (MinioException e)
+            {
+                Console.WriteLine("Minio Error occurred while copying: " + e.Message);
+                throw;
             }
         }
 
@@ -120,7 +141,8 @@ namespace BLL.Services
             }
             catch (MinioException e)
             {
-                Console.WriteLine("Error: " + e);
+                Console.WriteLine("Minio Error occured while deleting: " + e.Message);
+                throw;
             }
         }
     }
