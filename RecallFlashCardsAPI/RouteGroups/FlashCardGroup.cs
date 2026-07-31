@@ -6,16 +6,16 @@ namespace RecallFlashCardsAPI.RouteGroups
     {
         public static void AddFlashCardEndpoints(this WebApplication app)
         {
-            var group = app.MapGroup("/flashcards");
+            var group = app.MapGroup("/flashcard");
 
-            group.MapGet("/", FlashCardEndpoints.GetFlashCard);
-            group.MapGet("/all", FlashCardEndpoints.GetAllFlashCards);
-            group.MapGet("/paged", FlashCardEndpoints.GetPagedFlashCards);
-            group.MapPost("/", FlashCardEndpoints.PostFlashCard);
-            group.MapPut("/", FlashCardEndpoints.UpdateFlashCard);
-            group.MapPut("/cardcontent", FlashCardEndpoints.UpdateCardContent);
-            group.MapPost("/copy", FlashCardEndpoints.CopyFlashCard);
-            group.MapDelete("/", FlashCardEndpoints.DeleteFlashCard);
+            group.MapGet("/", FlashCardEndpoints.GetFlashCardAsync);
+            group.MapGet("/all", FlashCardEndpoints.GetAllFlashCardsAsync);
+            group.MapGet("/paged", FlashCardEndpoints.GetPagedFlashCardsAsync);
+            group.MapPost("/", FlashCardEndpoints.PostFlashCardAsync);
+            group.MapPut("/", FlashCardEndpoints.UpdateFlashCardAsync);
+            group.MapPut("/cardcontent", FlashCardEndpoints.UpdateCardContentAsync);
+            group.MapPost("/copy", FlashCardEndpoints.CopyFlashCardAsync);
+            group.MapDelete("/", FlashCardEndpoints.DeleteFlashCardAsync);
         }
     }
 }

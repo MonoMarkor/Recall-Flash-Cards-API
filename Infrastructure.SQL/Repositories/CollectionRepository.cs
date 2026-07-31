@@ -15,7 +15,7 @@ namespace Infrastructure.SQL.Repositories
         {
             _dbContext = dbContext;
         }
-        public async Task<int> CreateCollection(CollectionDto collection)
+        public async Task<int> CreateCollectionAsync(CollectionDto collection)
         {
             var newCollection = new CollectionEntity
             {

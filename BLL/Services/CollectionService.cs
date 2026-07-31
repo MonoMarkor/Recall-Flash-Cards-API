@@ -78,11 +78,22 @@ namespace BLL.Services
             return true;
         }
 
-        public Task<int> CreateCollection(CollectionDto collection)
+        // returns a "0" if collection Id is present
+        public async Task<int> CreateCollectionAsync(CollectionDto collection)
         {
-            var collectionId = _collectionRepository.CreateCollection(collection);
+            if (collection == null)
+            {
+                return 0;
+            }
+            if (collection.Id != 0)
+            {
+                return 0;
+            }
+            var collectionId = await _collectionRepository.CreateCollectionAsync(collection);
             return collectionId;
         }
+
+        // returns a "0" if not updated
         public async Task<int> UpdateCollectionNameAsync(int collectionId, string name)
         {
             int rowsAffected = await _collectionRepository.UpdateCollectionNameAsync(collectionId, name);
