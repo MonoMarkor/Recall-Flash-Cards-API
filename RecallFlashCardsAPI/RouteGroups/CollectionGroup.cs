@@ -8,6 +8,7 @@ namespace RecallFlashCardsAPI.RouteGroups
         {
             var group = app.MapGroup("/collection");
 
+            group.MapGet("/", CollectionEndpoints.GetCollectionsOfUserAsync);
             group.MapPost("/", CollectionEndpoints.CreateCollectionAsync);
             group.MapPut("/name", CollectionEndpoints.UpdateCollectionNameAsync);
             group.MapPut("/description", CollectionEndpoints.UpdateCollectionDescriptionAsync);

@@ -93,6 +93,28 @@ namespace BLL.Services
             return collectionId;
         }
 
+        public async Task<List<CollectionDto>> GetAllCollectionsOfUserAsync(int userId)
+        {
+            var collectionEntities = await _collectionRepository.GetAllCollectionsOfUserAsync(userId);
+
+            var mapTasks = collectionEntities.Select(entity =>
+            {
+                var dto = new CollectionDto
+                {
+                    Id = entity.Id,
+                    UserId = entity.UserId,
+                    Description = entity.Description,
+                    Name = entity.Name
+                };
+
+                return dto;
+            });
+
+            var collectionList = mapTasks;
+
+            return collectionList.ToList();
+        }
+
         // returns a "0" if not updated
         public async Task<int> UpdateCollectionNameAsync(int collectionId, string name)
         {

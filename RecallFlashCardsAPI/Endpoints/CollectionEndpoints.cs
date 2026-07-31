@@ -17,6 +17,16 @@ namespace RecallFlashCardsAPI.Endpoints
             return Results.CreatedAtRoute("CollectionId", new { Id = id });
         }
 
+        public static async Task<IResult> GetCollectionsOfUserAsync([FromQuery] int userId, ICollectionService collectionService)
+        {
+            List<CollectionDto> collections = await collectionService.GetAllCollectionsOfUserAsync(userId);
+            if (collections != null)
+            {
+                return Results.Ok(collections);
+            }
+            return Results.NotFound();
+        }
+
         public static async Task<IResult> UpdateCollectionNameAsync([FromBody] int collectionId, [FromBody] string name, ICollectionService collectionService)
         {
             int rows = await collectionService.UpdateCollectionNameAsync(collectionId, name);

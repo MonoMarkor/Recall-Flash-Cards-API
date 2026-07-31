@@ -1,5 +1,5 @@
 ﻿using Domain.DTOs;
-using Domain.IRepositories;
+using Infrastructure.SQL.IRepositories;
 using Infrastructure.SQL.Database.Entities;
 using Infrastructure.SQL.Database;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +27,16 @@ namespace Infrastructure.SQL.Repositories
             await _dbContext.SaveChangesAsync();
 
             return newCollection.Id;
+        }
+
+        public async Task<List<CollectionEntity>> GetAllCollectionsOfUserAsync(int userId)
+        {
+            var collectionEntities = await _dbContext.Collections
+                                        .Where(c => c.UserId == userId)
+                                        .OrderBy(c => c.Id)
+                                        .ToListAsync();
+
+            return collectionEntities;
         }
         public async Task<int> UpdateCollectionNameAsync(int collectionId, string name)
         {
