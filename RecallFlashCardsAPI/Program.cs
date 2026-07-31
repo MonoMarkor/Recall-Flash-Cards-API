@@ -1,18 +1,18 @@
 using BLL.Services;
-using Domain.DTOs;
 using Domain.IRepositories;
 using Domain.IServices;
 using Google.GenAI;
 using Infrastructure.Gemini;
 using Infrastructure.Gemini.Repositories;
 using Infrastructure.SQL.Database;
-using Infrastructure.SQL.Repositories;
 using Infrastructure.SQL.IRepositories;
+using Infrastructure.SQL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Minio;
-using RecallFlashCardsAPI.Models;
 using RecallFlashCardsAPI.RouteGroups;
-    
+using System.Net;
+using System.Threading.RateLimiting;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -49,6 +49,38 @@ builder.Services.AddMinio(options =>
     .WithSSL(builder.Configuration.GetSection("Minio").GetValue<bool>("Secure"))
 );
 
+string fixedFileUploadPolicy = "fixedFileUploads";
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = (int)HttpStatusCode.TooManyRequests;
+    options.OnRejected = async (context, token) =>
+    {
+        await context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.");
+    };
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 50,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+
+    options.AddPolicy<string>(fixedFileUploadPolicy, httpContext =>
+    {
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 4,
+                Window = TimeSpan.FromSeconds(12),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 2
+            });
+    });
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -62,6 +94,8 @@ using (var scope = app.Services.CreateScope())
     await minioService.InitBucketAsync(audioBucket);
 }
 
+app.UseRateLimiter();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -71,7 +105,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.AddCollectionEndpoints();
-app.AddFlashCardEndpoints();
+app.AddFlashCardEndpoints(fixedFileUploadPolicy);
 
 app.MapGet("/test", async ( IGenerativeAIRepository classification) =>
 {
@@ -79,16 +113,5 @@ app.MapGet("/test", async ( IGenerativeAIRepository classification) =>
 
     return Results.Ok(answer);
 });
-
-app.MapPost("/collection", async (ICollectionService collectionService, Collection collection) =>
-{
-    var newCollection = new CollectionDto
-    {
-        Name = collection.Name,
-        Description = collection.Description
-    };
-    return Results.Ok(newCollection.Id);
-});
-
 
 app.Run();
