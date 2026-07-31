@@ -11,7 +11,8 @@ using Infrastructure.SQL.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using Minio;
 using RecallFlashCardsAPI.Models;
-
+using RecallFlashCardsAPI.RouteGroups;
+    
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -68,6 +69,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.AddCollectionEndpoints();
+app.AddFlashCardEndpoints();
 
 app.MapGet("/test", async ( IGenerativeAIRepository classification) =>
 {

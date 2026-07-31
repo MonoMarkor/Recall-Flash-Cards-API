@@ -26,6 +26,15 @@ namespace RecallFlashCardsAPI.Endpoints
             }
             return Results.Ok();
         }
+        public static async Task<IResult> UpdateCollectionDescriptionAsync([FromBody] int collectionId, [FromBody] string desc, ICollectionService collectionService)
+        {
+            int rows = await collectionService.UpdateCollectionDescriptionAsync(collectionId, desc);
+            if (rows == 0)
+            {
+                return Results.NotFound();
+            }
+            return Results.Ok();
+        }
 
         public static async Task<IResult> SafelyDeleteAsync([FromQuery] int collectionId, ICollectionService collectionService)
         {

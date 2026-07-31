@@ -19,6 +19,7 @@ namespace Infrastructure.SQL.Repositories
         {
             var newCollection = new CollectionEntity
             {
+                UserId = collection.UserId,
                 Name = collection.Name,
                 Description = collection.Description
             };
@@ -32,6 +33,14 @@ namespace Infrastructure.SQL.Repositories
             int rowsAffected = await _dbContext.Collections
                 .Where(c => c.Id == collectionId)
                 .ExecuteUpdateAsync(s => s.SetProperty(c => c.Name, name));
+
+            return rowsAffected;
+        }
+        public async Task<int> UpdateCollectionDescriptionAsync(int collectionId, string desc)
+        {
+            int rowsAffected = await _dbContext.Collections
+                .Where(c => c.Id == collectionId)
+                .ExecuteUpdateAsync(s => s.SetProperty(c => c.Description, desc));
 
             return rowsAffected;
         }

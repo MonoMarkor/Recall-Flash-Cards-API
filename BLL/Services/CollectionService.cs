@@ -99,6 +99,12 @@ namespace BLL.Services
             int rowsAffected = await _collectionRepository.UpdateCollectionNameAsync(collectionId, name);
             return rowsAffected;
         }
+        // returns a "0" if not updated
+        public async Task<int> UpdateCollectionDescriptionAsync(int collectionId, string desc)
+        {
+            int rowsAffected = await _collectionRepository.UpdateCollectionDescriptionAsync(collectionId, desc);
+            return rowsAffected;
+        }
         public async Task<bool> DeleteCollectionAsync(int collectionId)
         {
             if (await DeleteAllFlashCards(collectionId)){
