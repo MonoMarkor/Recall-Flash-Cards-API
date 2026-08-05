@@ -41,7 +41,39 @@ secrets.json
 RecallFlashCardsAPI/appsettings.Development.json
 
 PostgreSQL
+Docker
 minio_data/
 pgadmin_working_dir/
 postgresql_data/
 .env
+
+# https://github.com/github/gitignore/blob/main/Angular.gitignore
+
+# Angular specific
+/dist/
+/out-tsc/
+/tmp/
+/coverage/
+/e2e/test-output/
+/.angular/
+.angular/
+
+# Node modules and dependency files
+/node_modules/
+/package-lock.json
+/yarn.lock
+
+# Environment files
+/.env
+
+# Angular CLI and build artefacts
+/.angular-cli.json
+/.ng/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

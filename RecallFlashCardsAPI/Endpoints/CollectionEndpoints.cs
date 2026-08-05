@@ -2,7 +2,6 @@
 using RecallFlashCardsAPI.Models;
 using Domain.IServices;
 using Microsoft.AspNetCore.Mvc;
-using Google.GenAI.Types;
 
 namespace RecallFlashCardsAPI.Endpoints
 {
@@ -10,10 +9,23 @@ namespace RecallFlashCardsAPI.Endpoints
     {
         public static async Task<IResult> CreateCollectionAsync([FromBody] Collection collection, ICollectionService collectionService)
         {
-            var collectionDto = new CollectionDto();
-            collectionDto.Name = collection.Name;
-            collectionDto.Description = collection.Description;
+            if (collection == null || collection.Id != 0)
+            {
+                return Results.StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            var collectionDto = new CollectionDto()
+            {
+                UserId = collection.UserId,
+                Name = collection.Name,
+                Description = collection.Description
+            };
+            
             int id = await collectionService.CreateCollectionAsync(collectionDto);
+            if (id == 0)
+            {
+                return Results.StatusCode(StatusCodes.Status500InternalServerError);
+            }
             return Results.CreatedAtRoute("CollectionId", new { Id = id });
         }
 

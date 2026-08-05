@@ -50,6 +50,19 @@ services:
     networks:
       - app_network
 
+  angular-app:
+    image: node:23-alpine
+    working_dir: /app
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./Frontend/:/app
+      - /app/node_modules
+      - ./angularEntrypoint.sh:/angularEntrypoint.sh:ro
+    entrypoint: ["sh", "/angularEntrypoint.sh"]
+    networks:
+      - app_network
+
 networks:
   app_network:
     driver: bridge

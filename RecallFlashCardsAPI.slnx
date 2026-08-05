@@ -1,10 +1,8 @@
 <Solution>
-  <Folder Name="/PostgreSQL/">
+  <Folder Name="/Docker/">
     <File Path=".env" />
+    <File Path="angularEntrypoint.sh" />
     <File Path="docker-compose.yml" />
-  </Folder>
-  <Folder Name="/Projektmappenelemente/">
-    <File Path=".gitignore" />
   </Folder>
   <Project Path="BLL/BLL.csproj" Id="f7c83b5a-0e66-4286-bd3f-6d49ad5830bb" />
   <Project Path="Domain/Domain.csproj" Id="5c7720d6-84c9-4436-8696-4b9e8256e7c3" />

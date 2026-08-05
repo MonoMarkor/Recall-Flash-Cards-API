@@ -1,0 +1,11 @@
+From node:23-Alpine
+
+WORKDIR /app
+
+RUN npm install
+
+Copy ./Frontend
+
+Expose 4200
+
+CMD ["npm", "start"]
