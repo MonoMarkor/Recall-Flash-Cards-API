@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if [ ! -f package.json ]; then
-	npx -p @angular/cli ng new app-temp --directory . --defaults --skip-git
-fi
-
-exec npm start -- --host 0.0.0.0 --poll 1000
